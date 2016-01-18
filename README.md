@@ -12,7 +12,7 @@ of the [Slack API](https://api.slack.com/) and [botkit](http://howdy.ai/botkit)
 3) Store the token in an environment variable named 'token' and let er rip
 
 ```bash
-token=<your token> node index.js
+token=<your token> node server.js
 ```
 
 The bot will reply to direct messages, and all mentions (direct or indirect).
