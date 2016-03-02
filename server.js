@@ -4,14 +4,25 @@ if (!process.env.token) {
 }
 
 var botkit = require('botkit');
+var controller = botkit.slackbot({});
 
-var controller = botkit.slackbot({
-    debug: true
-});
+var channels = [];
+var ims = [];
+var users = [];
+
+function reduceSlackData(source) {
+    return source.reduce((acc, elem) => { acc[elem.id] = elem; return acc; }, {});
+}
+
+function cacheSlackData(err, bot, payload) {
+    channels = reduceSlackData(payload.channels);
+    ims = reduceSlackData(payload.ims);
+    users = reduceSlackData(payload.users);
+}
 
 var bot = controller.spawn({
     token: process.env.token
-}).startRTM();
+}).startRTM(cacheSlackData);
 
 function saySomething(bot, message) {
     bot.api.users.info({ user: message.user }, function(err, resp) {
@@ -25,6 +36,11 @@ function saySomething(bot, message) {
     });
 }
 
+function reactToSomething(bot, reaction) {
+    bot.say({ text: "Hey, nice " + reaction.reaction, channel: reaction.item.channel});
+}
+
 controller.on('direct_mention', saySomething);
 controller.on('direct_message', saySomething);
 controller.on('mention', saySomething);
+controller.on('reaction_added', reactToSomething);
