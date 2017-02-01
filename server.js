@@ -24,6 +24,21 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM(cacheSlackData);
 
+controller.hears('wat', ['direct_message', 'direct_mention', 'mention', 'ambient'], (bot, msg) => {
+    const wat = {
+        'username': 'Ben Bot',
+        'text': 'wat',
+        "attachments": [
+            {
+                "fallback": "wat",
+                "text": "wat",
+                "image_url": "https://media.giphy.com/media/MMsTUIMfPeuYw/giphy-tumblr.gif"
+            }
+        ]
+    };
+    bot.reply(msg, wat);
+});
+
 function saySomething(bot, message) {
     bot.api.users.info({ user: message.user }, function(err, resp) {
         var user = resp.user;
@@ -40,7 +55,7 @@ function reactToSomething(bot, reaction) {
     bot.say({ text: "Hey, nice " + reaction.reaction, channel: reaction.item.channel});
 }
 
-controller.on('direct_mention', saySomething);
-controller.on('direct_message', saySomething);
-controller.on('mention', saySomething);
-controller.on('reaction_added', reactToSomething);
+//controller.on('direct_mention', saySomething);
+//controller.on('direct_message', saySomething);
+//controller.on('mention', saySomething);
+//controller.on('reaction_added', reactToSomething);
